@@ -1,0 +1,24 @@
+version: '3.6'
+services:
+  postgres:
+    image: postgres:12.3-alpine
+    restart: always
+    container_name: postgres_12_container
+    ports:
+      - "5433:5432"
+    volumes:
+      - bundle_db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "konem"
+      POSTGRES_DB: "bundle"
+      POSTGRES_PASSWORD: PassWord
+  go:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    restart: always
+    container_name: golang_container
+volumes:
+    bundle_db_data:
