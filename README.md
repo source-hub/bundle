@@ -1,2 +1,2 @@
 # bundle
-cluster things and share them to the internet
+Cluster things and share them to the internet

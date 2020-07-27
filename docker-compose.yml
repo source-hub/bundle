@@ -19,6 +19,8 @@ services:
     depends_on:
       - postgres
     restart: always
+    links:
+      - postgres
     container_name: golang_container
 volumes:
     bundle_db_data:

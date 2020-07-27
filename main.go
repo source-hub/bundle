@@ -8,6 +8,7 @@ import (
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/logger"
 	"bundle/config"
+	"bundle/controllers"
 )
 
 func main(){
@@ -61,6 +62,12 @@ func main(){
 	api.Get("/health/ping", func(ctx iris.Context) {
 		ctx.JSON(iris.Map{"message": "PONG"})
 	})
+	//users
+	userctrl:=controllers.UserController{Db:db}
+	user_apis:=api.Party("/user")
+	user_apis.Post("/register",userctrl.Create)
+	user_apis.Post("/login",userctrl.Login)
+
 	api.Get("/dev",func(ctx iris.Context){
 		ctx.JSON(iris.Map{"message":"lets develop bundle!"})
 	})

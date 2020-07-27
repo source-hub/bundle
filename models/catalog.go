@@ -14,7 +14,8 @@ type Catalog struct {
 	Parent string `json:"parent"`
 	Type string `json:"type"`
 	Votes int `json:"votes"`
-	User_id uint `json:"user_id" sql:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE`
+	Tags []string `json:"tags"`
+	User_id uint `json:"user_id" sql:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE"`
 }
 
 func (c *Catalog) TableName() string {
