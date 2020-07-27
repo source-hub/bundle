@@ -2,6 +2,8 @@ package main
 
 
 import (
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/rs/cors"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/logger"
@@ -27,11 +29,33 @@ func main(){
 		Query: true,
 
 		MessageContextKeys: []string{"logger_message"},
-
-		// if !empty then its contents derives from `ctx.GetHeader("User-Agent")
 		MessageHeaderKeys: []string{"User-Agent"},
 	})
 
+	//db
+
+	db, err := gorm.Open("postgres", app_config["db_env"])
+
+	if err != nil {
+		panic(err)
+		return 
+
+	}
+	db.LogMode(true)
+	defer db.Close()
+
+	perform_migrations := true
+	drop := false
+
+	if drop {
+		Drop(db)
+	}
+
+	if perform_migrations {
+		Migrate(db)
+	}
+
+	//
 	app.Use(customLogger)
 	api := app.Party("/api/v1")
 	api.Get("/health/ping", func(ctx iris.Context) {

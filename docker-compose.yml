@@ -5,7 +5,7 @@ services:
     restart: always
     container_name: postgres_12_container
     ports:
-      - "5433:5432"
+      - "5435:5432"
     volumes:
       - bundle_db_data:/var/lib/postgresql/data
     environment:
