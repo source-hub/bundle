@@ -37,7 +37,7 @@ func(c UserController)Create(ctx iris.Context){
 		return
 	}
 	c.Db.Where("email = ?", readuser.Email).First(&checkuser)
-	if checkuser.Email == "" {
+	if checkuser.Email != "" {
 		ctx.JSON(iris.Map{"success": false, "error": iris.Map{"message": "Username or email already exists"}})
 		return
 	}

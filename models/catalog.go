@@ -14,7 +14,7 @@ type Catalog struct {
 	Parent string `json:"parent"`
 	Type string `json:"type"`
 	Votes int `json:"votes"`
-	Tags []string `json:"tags"`
+	Tag_catalogs []Tag_Catalog `gorm:"foreignkey:catalog_id"`
 	User_id uint `json:"user_id" sql:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE"`
 }
 

@@ -96,7 +96,7 @@ func (cc *UserFunc) VerifyToken(token string, response *FunctionResponse) bool {
 	}
 	err := cc.DB.Where("id = ?", response.JWTClaims.ID).First(&response.User).Error
 	if err != nil {
-		println("There is an issue with gettign the user data")
+		println("There is an issue with getting the user data")
 		println(err.Error())
 		response.Message = err.Error()
 		response.Success = false
