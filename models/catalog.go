@@ -10,11 +10,12 @@ type Catalog struct {
 	UpdatedAt  time.Time  `json:"updated_at"`
 	DeletedAt  *time.Time `json:"-" sql:"index"`
 	Name string `json:"name"`
-	Root string `json:"root"`
-	Parent string `json:"parent"`
+	Root uint `json:"root"`
+	Parent uint `json:"parent"`
 	Type string `json:"type"`
 	Votes int `json:"votes"`
 	Tag_catalogs []Tag_Catalog `gorm:"foreignkey:catalog_id"`
+	Item_catalogs []Item_catalog `gorm:"foreignkey:catalog_id"`
 	User_id uint `json:"user_id" sql:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE"`
 }
 
