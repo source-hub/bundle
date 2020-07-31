@@ -14,6 +14,8 @@ func Migrate(db *gorm.DB) {
 	db.AutoMigrate(
 		&models.User{},
 		&models.Catalog{},
+		&models.Item{},
+		&models.Item_Catalog{},
 	)
 	println("done performing migrations")
 }
@@ -22,5 +24,7 @@ func Drop(db *gorm.DB) {
 	db.DropTableIfExists(
 		&models.User{},
 		&models.Catalog{},
+		&models.Item{},
+		&models.Item_Catalog{},
 	)
 }

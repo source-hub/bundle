@@ -73,6 +73,7 @@ func main(){
 	catalogCtrl:=controllers.CatalogCtrl{Db:db}
 	cat_apis:=api.Party("/catalog")
 	cat_apis.Post("/create",catalogCtrl.Create)
+	cat_apis.Post("/additem",catalogCtrl.AddItem)
 	api.Get("/dev",func(ctx iris.Context){
 		ctx.JSON(iris.Map{"message":"lets develop bundle!"})
 	})

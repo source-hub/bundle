@@ -13,6 +13,6 @@ type Item_Catalog struct{
 	UpdatedAt  time.Time  `json:"updated_at"`
 	DeletedAt  *time.Time `json:"-" sql:"index"`
 }
-func (Tc Tag_Catalog) TableName() string {
+func (Tc Item_Catalog) TableName() string {
 	return "item_catalogs"
 }

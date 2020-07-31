@@ -14,6 +14,6 @@ type Item struct {
 	Item_catalogs []Item_Catalog `gorm:"foreignkey:item_id"`
 }
 
-func (c *Catalog) TableName() string {
+func (c *Item) TableName() string {
 	return "items"
 }
