@@ -15,7 +15,8 @@ type User struct {
 	Last_name  string     `json:"last_name"`
 	Guid  string
 	Email string `json:"email" gorm:"not null;unique"`
-	Catalogs []Catalog `gorm:"foreignkey:User_id"`
+	Catalogs []Catalog	`gorm:"foreignkey:user_id"` 
+	//
 }
 
 func (U *User) TableName() string {

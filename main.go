@@ -45,7 +45,7 @@ func main(){
 	db.LogMode(true)
 	defer db.Close()
 
-	perform_migrations := true
+	perform_migrations := false
 	drop := false
 
 	if drop {
@@ -74,6 +74,7 @@ func main(){
 	cat_apis:=api.Party("/catalog")
 	cat_apis.Post("/create",catalogCtrl.Create)
 	cat_apis.Post("/additem",catalogCtrl.AddItem)
+	cat_apis.Get("/getcatalogs",catalogCtrl.GetAll)
 	api.Get("/dev",func(ctx iris.Context){
 		ctx.JSON(iris.Map{"message":"lets develop bundle!"})
 	})

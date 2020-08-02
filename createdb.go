@@ -17,6 +17,8 @@ func Migrate(db *gorm.DB) {
 		&models.Item{},
 		&models.Item_Catalog{},
 	)
+	db.Model(&models.Catalog{}).AddForeignKey("user_id","users(id)","cascade","cascade")
+	db.Model(&models.Item_Catalog{}).AddUniqueIndex("idx_catalog_id_item_id","catalog_id","item_id")
 	println("done performing migrations")
 }
 

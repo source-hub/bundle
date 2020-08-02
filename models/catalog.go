@@ -16,7 +16,8 @@ type Catalog struct {
 	Votes int `json:"votes"`
 	Tag_catalogs []Tag_Catalog `gorm:"foreignkey:catalog_id"`
 	Item_catalogs []Item_Catalog `gorm:"foreignkey:catalog_id"`
-	User_id uint `json:"user_id" sql:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE"`
+	User_id uint `json:"user_id" gorm:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE"`
+	//`json:"user_id" sql:"type bigserial REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE"`
 }
 
 func (c *Catalog) TableName() string {

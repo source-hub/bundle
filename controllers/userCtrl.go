@@ -20,6 +20,7 @@ import (
 type UserController struct{
 	Db *gorm.DB
 }
+
 func(c UserController)Create(ctx iris.Context){
 	var (
 		readuser models.User
@@ -73,7 +74,8 @@ func(c UserController)Create(ctx iris.Context){
 		"email":      readuser.Email,
 		"created_at": readuser.CreatedAt,
 	}})
-	tx.Commit()		
+	tx.Commit()	
+	return	
 }
 func(c UserController)Login(ctx iris.Context){
 	var (
