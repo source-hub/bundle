@@ -75,6 +75,7 @@ func main(){
 	cat_apis.Post("/create",catalogCtrl.Create)
 	cat_apis.Post("/additem",catalogCtrl.AddItem)
 	cat_apis.Get("/getcatalogs",catalogCtrl.GetAll)
+	cat_apis.Post("/to",catalogCtrl.To)
 	api.Get("/dev",func(ctx iris.Context){
 		ctx.JSON(iris.Map{"message":"lets develop bundle!"})
 	})

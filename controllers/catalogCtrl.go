@@ -265,5 +265,77 @@ func (c *CatalogCtrl)To(ctx iris.Context){
 		})
 		return
 	}
+	var (
+		checkcat models.Catalog
+		readcat models.Catalog
+	)
+	err:=ctx.ReadJSON(&readcat)
+	if err!=nil{
+		ctx.JSON(iris.Map{
+			"success":false,
+			"error":iris.Map{
+				"message":"problem reading the body",
+			},
+		})
+		return
+	}
+	c.Db.Where("id=?",readcat.ID).Find(&checkcat)
+	if checkcat.Name==""{
+		ctx.JSON(iris.Map{
+			"success":false,
+			"error":iris.Map{
+				"message":"catalog does not exist",
+			},
+		})
+		return
+	}
+	fmt.Println("the object to update",checkcat)
+	err=c.Db.Save(&checkcat).Error
+	if err!=nil{
+		ctx.JSON(iris.Map{
+			"success":false,
+			"error":iris.Map{
+				"message":"error upadting the catalog",
+			},
+		})
+		return
+	}
+	mess:=fmt.Sprintf("Your catalog is now %s!",readcat.Type)
+	ctx.JSON(iris.Map{
+		"success":true,
+		"message":mess,
+	})
+}
+func (c *CatalogCtrl)Explore(ctx iris.Context){
+	token := ctx.GetHeader("token")
+	userFunc := functions.UserFunc{DB: c.Db}
+	var tokenResponse functions.FunctionResponse
+	verifyusr:=userFunc.VerifyToken(token, &tokenResponse)
+	if !verifyusr {
+		ctx.JSON(iris.Map{
+			"success":false,
+			"error":iris.Map{
+				"message":"could not identify the user",
+			},
+		})
+		return
+	}
+	var (
+		catalogs []models.Catalog
+	)
+	query:=`
+		select 
+		catalogs.name as catalog_name,
+		catalogs.type as catalog_type,
+		item_catalogs.catalog_id as catalog_id,
+		items.img as item_img,
+		items.id as item_id,
+		items.link as item_link 
+		from items 
+		inner join item_catalogs 
+		on items.id=item_catalogs.item_id
+		inner join catalogs
+		on catalogs.id = item_catalogs.catalog_id 
+		where catalogs.type='public'`
 	//resume here
 }
