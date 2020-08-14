@@ -149,24 +149,29 @@ func (c *CatalogCtrl)GetAll(ctx iris.Context){
 		c.Db.ScanRows(rows,&qs)
 		query_res=append(query_res,qs)
 	}
-	final_response:=make(map[string]models.Custom_Catalog)
+	final_response:=make([]models.Custom_Catalog,0)
+	temp_response:=make(map[string]models.Custom_Catalog)
 	for _,v:=range query_res{
-		if cat,ok:=final_response[v.Catalog_name];ok{
+		if cat,ok:=temp_response[v.Catalog_name];ok{
 			items:=cat.Items
 			c_item:=models.Custom_Item{Link:v.Item_link,Img:v.Item_img}
 			items=append(items,c_item)
 			cat.Items=items
-			final_response[v.Catalog_name]=cat
+			temp_response[v.Catalog_name]=cat
 		}else{
 			c_cat:=models.Custom_Catalog{Name:v.Catalog_name,Id:v.Catalog_id}
 			c_item:=models.Custom_Item{Link:v.Item_link}
 			c_cat.Items=[]models.Custom_Item{c_item}
-			final_response[v.Catalog_name]=c_cat
+			temp_response[v.Catalog_name]=c_cat
 		}
+	}
+	for _,v:=range temp_response{
+		final_response=append(final_response,v)
 	}
 	fmt.Println("query_result",final_response)
 	ctx.JSON(iris.Map{
 		"success":true,
+		"length":len(final_response),
 		"message":"Catalogs Fetched successfully",
 		"result":final_response,
 		})
@@ -279,6 +284,24 @@ func (c *CatalogCtrl)To(ctx iris.Context){
 		})
 		return
 	}
+	check:=func()bool{
+		flag:=false
+		for _,i:=range([]string{"public","private"}){
+			if i==readcat.Type{
+				flag=true
+			}
+		}
+		return flag
+	}
+	if ok:=check();!ok{
+		ctx.JSON(iris.Map{
+			"success":false,
+			"error":iris.Map{
+				"message":"provided invalid type",
+			},
+		})
+		return
+	}
 	c.Db.Where("id=?",readcat.ID).Find(&checkcat)
 	if checkcat.Name==""{
 		ctx.JSON(iris.Map{
@@ -289,6 +312,7 @@ func (c *CatalogCtrl)To(ctx iris.Context){
 		})
 		return
 	}
+	checkcat.Type=readcat.Type
 	fmt.Println("the object to update",checkcat)
 	err=c.Db.Save(&checkcat).Error
 	if err!=nil{
@@ -300,6 +324,7 @@ func (c *CatalogCtrl)To(ctx iris.Context){
 		})
 		return
 	}
+	fmt.Println("done updating")
 	mess:=fmt.Sprintf("Your catalog is now %s!",readcat.Type)
 	ctx.JSON(iris.Map{
 		"success":true,
@@ -321,12 +346,16 @@ func (c *CatalogCtrl)Explore(ctx iris.Context){
 		return
 	}
 	var (
-		catalogs []models.Catalog
+		//catalogs []models.Catalog
+		qs models.Query_struct
+		query_res []models.Query_struct
 	)
 	query:=`
 		select 
+		users.first_name as creator,
 		catalogs.name as catalog_name,
 		catalogs.type as catalog_type,
+		catalogs.votes as catalog_votes,
 		item_catalogs.catalog_id as catalog_id,
 		items.img as item_img,
 		items.id as item_id,
@@ -335,7 +364,49 @@ func (c *CatalogCtrl)Explore(ctx iris.Context){
 		inner join item_catalogs 
 		on items.id=item_catalogs.item_id
 		inner join catalogs
-		on catalogs.id = item_catalogs.catalog_id 
+		on catalogs.id = item_catalogs.catalog_id
+		inner join users
+		on users.id = catalogs.root 
 		where catalogs.type='public'`
-	//resume here
+	rows,err:=c.Db.Raw(query).Rows()
+	if err!=nil{
+		fmt.Println(err,err.Error())
+		ctx.JSON(iris.Map{
+			"success":false,
+			"error":iris.Map{
+				"message":"problem fetching items",
+			},
+		})
+		return
+	}
+	defer rows.Close()
+	for rows.Next(){
+		c.Db.ScanRows(rows,&qs)
+		query_res=append(query_res,qs)
+	}
+	final_response:=make([]models.Custom_Catalog,0)
+	temp_response:=make(map[string]models.Custom_Catalog)
+	for _,v:=range query_res{
+		if cat,ok:=temp_response[v.Catalog_name];ok{
+			items:=cat.Items
+			c_item:=models.Custom_Item{Link:v.Item_link,Img:v.Item_img}
+			items=append(items,c_item)
+			cat.Items=items
+			temp_response[v.Catalog_name]=cat
+		}else{
+			c_cat:=models.Custom_Catalog{Name:v.Catalog_name,Id:v.Catalog_id,Votes:v.Catalog_votes,Creator:v.Creator}
+			c_item:=models.Custom_Item{Link:v.Item_link}
+			c_cat.Items=[]models.Custom_Item{c_item}
+			temp_response[v.Catalog_name]=c_cat
+		}
+	}
+	for _,v:=range temp_response{
+		final_response=append(final_response,v)
+	}
+	ctx.JSON(iris.Map{
+		"success":true,
+		"length":len(final_response),
+		"message":"Catalogs Fetched successfully",
+		"result":final_response,
+		})
 }
