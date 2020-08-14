@@ -9,9 +9,9 @@ services:
     volumes:
       - bundle_db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: "konem"
+      POSTGRES_USER: "sonu"
       POSTGRES_DB: "bundle"
-      POSTGRES_PASSWORD: PassWord
+      POSTGRES_PASSWORD: code
   go:
     build: .
     ports:
