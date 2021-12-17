@@ -15,7 +15,7 @@ func (c *Config) GetConfig() map[string]string {
 	}
 
 	db_env := map[string]string{
-		"aakash":   "host=postgres_12_container port=5432 user=konem dbname=bundle password=PassWord sslmode=disable",
+		"aakash":   "host=localhost port=5435 user=konem dbname=bundle password=PassWord sslmode=disable",
 	}
 
 	// should be moved to environment variables once the main checklist is done.
