@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgres
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: bundle
+            - name: POSTGRES_PASSWORD
+              value: PassWord
+            - name: POSTGRES_USER
+              value: konem
+          image: postgres:12.3-alpine
+          name: postgres-12-container
+          ports:
+            - containerPort: 5432
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: bundle-db-data
+      restartPolicy: Always
+      volumes:
+        - name: bundle-db-data
+          persistentVolumeClaim:
+            claimName: bundle-db-data
+status: {}
