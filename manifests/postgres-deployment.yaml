@@ -1,48 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert -f ../docker-compose.yml
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: postgres
-  name: postgres
+  name: postgres-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      io.kompose.service: postgres
-  strategy:
-    type: Recreate
+      app: postgres-pods
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f ../docker-compose.yml
-        kompose.version: 1.22.0 (955b78124)
-      creationTimestamp: null
       labels:
-        io.kompose.service: postgres
+        app: postgres-pods
+      annotations:
+        configmap-version: v1
     spec:
       containers:
-        - env:
-            - name: POSTGRES_DB
-              value: bundle
-            - name: POSTGRES_PASSWORD
-              value: PassWord
-            - name: POSTGRES_USER
-              value: konem
-          image: postgres:12.3-alpine
-          name: postgres-12-container
-          ports:
-            - containerPort: 5432
-          resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: bundle-db-data
-      restartPolicy: Always
-      volumes:
-        - name: bundle-db-data
-          persistentVolumeClaim:
-            claimName: bundle-db-data
-status: {}
+      - name: postgres-bundle
+        image: postgres:14
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+        envFrom:
+          - configMapRef:
+              name: postgres-config-map
+          - secretRef:
+              name: bundle-db-secret

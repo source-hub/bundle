@@ -1,15 +1,13 @@
 FROM golang:1.14
 
-WORKDIR /app
-
 ENV GO111MODULE=on
 
-COPY go.mod go.sum ./
+ENV CGO_ENABLED 0
+COPY . /service
+WORKDIR /service
+RUN make build  
 
-RUN go mod download
-
-COPY . .
-
-CMD ["make","run"]
+RUN ls
+CMD ./bundle
 
 EXPOSE 5000

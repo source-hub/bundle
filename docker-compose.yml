@@ -5,13 +5,13 @@ services:
     restart: always
     container_name: postgres_12_container
     ports:
-      - "5435:5432"
+      - "5432:5432"
     volumes:
       - bundle_db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: "konem"
-      POSTGRES_DB: "bundle"
-      POSTGRES_PASSWORD: PassWord
+      POSTGRES_USER: $DB_USER
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
   go:
     build: .
     ports:
