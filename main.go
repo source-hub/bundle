@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/rs/cors"
+	"log"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/logger"
 	"bundle/config"
@@ -34,18 +35,16 @@ func main(){
 	})
 
 	//db
-
+	log.Println(app_config["db_env"])
 	db, err := gorm.Open("postgres", app_config["db_env"])
-
 	if err != nil {
-		panic(err)
-		return 
+		log.Fatal("problem connecting to the db") 
 
 	}
 	db.LogMode(true)
 	defer db.Close()
 
-	perform_migrations := false
+	perform_migrations := true
 	drop := false
 
 	if drop {
@@ -57,6 +56,7 @@ func main(){
 	}
 
 	//
+	log.Println("performed migration!")
 	app.Use(customLogger)
 	api := app.Party("/api/v1")
 	api.Get("/health/ping", func(ctx iris.Context) {

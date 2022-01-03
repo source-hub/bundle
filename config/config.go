@@ -1,7 +1,11 @@
 package config
 
 
-import "os"
+import (
+		"os"
+		_ "github.com/joho/godotenv/autoload"
+		"fmt"
+	)	
 
 type Config struct {
 }
@@ -14,8 +18,8 @@ func (c *Config) GetConfig() map[string]string {
 		port = "5000"
 	}
 
-	db_env := map[string]string{
-		"aakash":   "host=localhost port=5435 user=konem dbname=bundle password=PassWord sslmode=disable",
+	db_config := map[string]string{
+		"dev": fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD")),
 	}
 
 	// should be moved to environment variables once the main checklist is done.
@@ -23,8 +27,7 @@ func (c *Config) GetConfig() map[string]string {
 		"foo":        "Bar",
 		"jwtKey":     "SomeRandomJWTKEY",
 		"db_dialect": "postgres",
-		"db_env":     db_env["aakash"],
-		"sendgrid":   "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",
+		"db_env":     db_config["dev"],
 		"PORT":       port,
 	}
 	return config

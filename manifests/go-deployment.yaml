@@ -1,33 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: bundle-go
   annotations:
-    kompose.cmd: kompose convert -f ../docker-compose.yml
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: go
-  name: go
+    configMapVersion: v0.1
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      io.kompose.service: go
-  strategy: {}
+      app: bundle-go-pods
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert -f ../docker-compose.yml
-        kompose.version: 1.22.0 (955b78124)
-      creationTimestamp: null
       labels:
-        io.kompose.service: go
+        app: bundle-go-pods
     spec:
       containers:
-        - image: go
-          name: golang-container
-          ports:
-            - containerPort: 5000
-          resources: {}
-      restartPolicy: Always
-status: {}
+      - name: bundle-go-container
+        image: konem/bundle:0.1.3
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
