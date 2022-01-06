@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: postgres-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: postgres-pods
   ports:
   - port: 5432
     targetPort: 5432
-    nodePort: 30005
+
