@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bundle-go
+  annotations:
+    configMapVersion: v0.1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bundle-go-pods
+  template:
+    metadata:
+      labels:
+        app: bundle-go-pods
+    spec:
+      containers:
+      - name: bundle-go-container
+        image: konem/bundle:0.1.5
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000

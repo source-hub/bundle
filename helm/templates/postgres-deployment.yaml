@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres-pods
+  template:
+    metadata:
+      labels:
+        app: postgres-pods
+      annotations:
+        configmap-version: v1
+    spec:
+      containers:
+      - name: postgres-bundle
+        image: postgres:14
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+        envFrom:
+          - configMapRef:
+              name: postgres-config-map
+          - secretRef:
+              name: bundle-db-secret
