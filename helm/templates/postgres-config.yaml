@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config-map
+data:
+  POSTGRES_DB: bundle
+  POSTGRES_PORT: "5432"
+  POSTGRES_USER: bundle_user
+
