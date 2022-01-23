@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  bundle:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-01-24T03:29:59.189693081+05:30"
+    description: A Helm chart for deploying bundle's k8s resources
+    digest: 5cf8ffcba8123571912b6ab2a7e9fad992cee4add8c8ae7c646935d46b6b0d6a
+    name: bundle
+    type: application
+    urls:
+    - bundle-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-01-24T03:29:59.189140146+05:30"
